@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ConfigServiceClient.Abstractions;
+using ConfigServiceClient.Api;
 using ConfigServiceClient.ConfigLoading;
 using ConfigServiceClient.Core.Models;
 

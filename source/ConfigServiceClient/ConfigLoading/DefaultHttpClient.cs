@@ -6,7 +6,7 @@ using ConfigServiceClient.Core.Exceptions;
 
 namespace ConfigServiceClient.ConfigLoading
 {
-    public class DefaultHttpClient
+    internal class DefaultHttpClient
     {
         private readonly HttpClient _client;
 

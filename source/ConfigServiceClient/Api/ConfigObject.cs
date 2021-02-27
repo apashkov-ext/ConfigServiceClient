@@ -3,7 +3,7 @@ using ConfigServiceClient.Abstractions;
 using ConfigServiceClient.Core.Exceptions;
 using ConfigServiceClient.Core.Models;
 
-namespace ConfigServiceClient
+namespace ConfigServiceClient.Api
 {
     public class ConfigObject : IConfigObject
     {

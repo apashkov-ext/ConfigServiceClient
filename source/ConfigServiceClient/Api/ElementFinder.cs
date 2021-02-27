@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using ConfigServiceClient.Core.Models;
 
-namespace ConfigServiceClient
+namespace ConfigServiceClient.Api
 {
     internal class ElementFinder<TElement> where TElement : class
     {
