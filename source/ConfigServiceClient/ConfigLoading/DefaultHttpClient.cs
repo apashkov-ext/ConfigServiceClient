@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using ConfigServiceClient.Core.Exceptions;
+using ConfigServiceClient.Abstractions;
 
 namespace ConfigServiceClient.ConfigLoading
 {
-    internal class DefaultHttpClient
+    public class DefaultHttpClient : IHttpClient
     {
         private readonly HttpClient _client;
 
@@ -18,13 +17,13 @@ namespace ConfigServiceClient.ConfigLoading
         public async Task<T> GetAsync<T>(string uri)
         {
             var resp = await ExecuteHttpMethod(() => _client.GetAsync(uri));
-            return JsonSerializer.Deserialize<T>(await resp.Content.ReadAsStringAsync(), SerializerOptions.JsonSerializerOptions);
+            return JsonDeserializer.Deserialize<T>(await resp.Content.ReadAsStringAsync());
         }
 
         private static async Task<T> FromJsonContent<T>(HttpContent content)
         {
             var jsonResponse = await content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<T>(jsonResponse, SerializerOptions.JsonSerializerOptions);
+            return JsonDeserializer.Deserialize<T>(jsonResponse);
         }
 
         private static async Task<HttpResponseMessage> ExecuteHttpMethod(Func<Task<HttpResponseMessage>> method)
@@ -41,22 +40,19 @@ namespace ConfigServiceClient.ConfigLoading
                 var content = await TryGetContent(response);
                 var message = $"An error occurred while accessing the source {(string.IsNullOrEmpty(content) ? string.Empty : $": {content}")}";
 
-                throw (int)response.StatusCode switch
+                switch ((int) response.StatusCode) 
                 {
-                    404 => ConfigNotFoundException.Create(message),
-                    _ => new ApplicationException(message)
+                    case 404:
+                        return null;
+                    default: 
+                        throw new ApplicationException(message);
                 };
             }
         }
 
         private static async Task<string> TryGetContent(HttpResponseMessage response)
         {
-            if (response.Content == null)
-            {
-                return null;
-            }
-
-            if (response.Content.Headers.ContentType.MediaType != "application/json")
+            if (response.Content.Headers.ContentType?.MediaType != "application/json")
             {
                 return await response.Content.ReadAsStringAsync();
             }

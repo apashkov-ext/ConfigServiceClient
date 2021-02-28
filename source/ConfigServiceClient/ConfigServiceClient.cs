@@ -1,80 +1,39 @@
 ﻿using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ConfigServiceClient.Abstractions;
 using ConfigServiceClient.Api;
 using ConfigServiceClient.ConfigLoading;
+using ConfigServiceClient.Core.Exceptions;
 using ConfigServiceClient.Core.Models;
 
 namespace ConfigServiceClient
 {
     public class ConfigServiceClient
     {
-        private readonly DefaultHttpClient _httpClient;
+        private readonly IHttpClient _httpClient;
         private readonly string _project;
 
         public ConfigServiceClient(string configServiceApiEndpoint, string project, string apiKey)
         {
-            if (string.IsNullOrWhiteSpace(configServiceApiEndpoint))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace", nameof(configServiceApiEndpoint));
-            }
-
-            if (string.IsNullOrWhiteSpace(apiKey))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace", nameof(apiKey));
-            }
-
             if (string.IsNullOrWhiteSpace(project))
             {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(project));
             }
 
-            var http = new HttpClient
-            {
-                BaseAddress = new Uri(configServiceApiEndpoint),
-                DefaultRequestHeaders =
-                {
-                    Accept =
-                    {
-                        new MediaTypeWithQualityHeaderValue("application/json"),
-                    },
-                    UserAgent =
-                    {
-                        new ProductInfoHeaderValue("ConfigurationServiceClient", GetType().Assembly.GetName().Version?.ToString())
-                    }
-                }
-            };
-
-            http.DefaultRequestHeaders.Add("ApiKey", apiKey);
-
-            _httpClient = new DefaultHttpClient(http);
+            _httpClient = HttpClientFactory.GetHttpClient(configServiceApiEndpoint, apiKey, GetType().Assembly.GetName().Version?.ToString());
             _project = project;
         }
 
-        public IConfigObject Load(string environment)
+        protected ConfigServiceClient(string project, IHttpClient httpClient)
         {
-            var loadTask = LoadAsync(environment);
-            var task = Task.Run(async () => await loadTask);
-            task.Wait();
-
-            return task.Result;
+            _httpClient = httpClient;
+            _project = project;
         }
 
         public async Task<IConfigObject> LoadAsync(string environment)
         {
             var g = await GetOptionGroup(environment);
             return new ConfigObject(g);
-        }
-
-        public T Load<T>(string environment) where T : class
-        {
-            var loadTask = LoadAsync<T>(environment);
-            var task = Task.Run(async () => await loadTask);
-            task.Wait();
-
-            return task.Result;
         }
 
         public Task<T> LoadAsync<T>(string environment) where T : class
@@ -84,12 +43,25 @@ namespace ConfigServiceClient
 
         private async Task<T> GetConfig<T>(string environment) where T : class
         {
-            return await _httpClient.GetAsync<T>($"api/projects/{_project}/configs/{environment}");
+            if (string.IsNullOrWhiteSpace(environment))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(environment));
+            }
+            return await _httpClient.GetAsync<T>($"api/projects/{_project}/configs/{environment}") ?? throw GetNotFoundEx(_project, environment);
         }
 
         private async Task<OptionGroup> GetOptionGroup(string environment)
         {
-            return await _httpClient.GetAsync<OptionGroup>($"api/projects/{_project}/option-groups/{environment}");
+            if (string.IsNullOrWhiteSpace(environment))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(environment));
+            }
+            return await _httpClient.GetAsync<OptionGroup>($"api/projects/{_project}/option-groups/{environment}") ?? throw GetNotFoundEx(_project, environment);
+        }
+
+        private static ConfigNotFoundException GetNotFoundEx(string proj, string env)
+        {
+            return ConfigNotFoundException.Create($"Config \"{proj}.{env}\" does not exist");
         }
     }
 }

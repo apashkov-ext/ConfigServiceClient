@@ -16,15 +16,20 @@ namespace ConfigServiceClient.Core
 
         public object Parse()
         {
-            return _element.ValueKind switch
+            switch (_element.ValueKind)
             {
-                JsonValueKind.Array => GetArrayValue(_element),
-                JsonValueKind.String => _element.GetString(),
-                JsonValueKind.True => _element.GetBoolean(),
-                JsonValueKind.False => _element.GetBoolean(),
-                JsonValueKind.Number => _element.GetInt32(),
-                _ => throw new ApplicationException("Invalid json format")
-            };
+                case JsonValueKind.Array:
+                    return GetArrayValue(_element);
+                case JsonValueKind.String:
+                    return _element.GetString();
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                    return _element.GetBoolean();
+                case JsonValueKind.Number:
+                    return _element.GetInt32();
+                default:
+                    throw new ApplicationException("Invalid json format");
+            }
         }
 
         private static object GetArrayValue(JsonElement el)
@@ -35,12 +40,15 @@ namespace ConfigServiceClient.Core
                 return null;
             }
 
-            return arr.First().ValueKind switch
+            switch (arr.First().ValueKind)
             {
-                JsonValueKind.String => arr.Select(x => x.GetString()).ToArray(),
-                JsonValueKind.Number => arr.Select(x => x.GetInt32()).ToArray(),
-                _ => throw new ApplicationException("Invalid Json format")
-            };
+                case JsonValueKind.String:
+                    return arr.Select(x => x.GetString()).ToArray();
+                case JsonValueKind.Number:
+                    return arr.Select(x => x.GetInt32()).ToArray();
+                default:
+                    throw new ApplicationException("Invalid Json format");
+            }
         }
     }
 }
