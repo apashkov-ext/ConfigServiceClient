@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using ConfigServiceClient.Abstractions;
 
-namespace ConfigServiceClient.ConfigLoading
+namespace ConfigServiceClient.Persistence.LoadingFromRemoteStorage
 {
-    internal static class HttpClientFactory
+    public static class HttpClientFactory
     {
         public static IHttpClient GetHttpClient(string configServiceApiEndpoint, string apiKey, string appVersion)
         {
@@ -19,7 +18,12 @@ namespace ConfigServiceClient.ConfigLoading
                 throw new ArgumentException("Value cannot be null or whitespace", nameof(apiKey));
             }
 
-            var http = new HttpClient
+            return new DefaultHttpClient(GetHttp(configServiceApiEndpoint, apiKey, appVersion));
+        }
+
+        private static HttpClient GetHttp(string configServiceApiEndpoint, string apiKey, string appVersion)
+        {
+            var http = new HttpClient(new HttpMessageHandler(new HttpClientHandler(), 3))
             {
                 BaseAddress = new Uri(configServiceApiEndpoint),
                 DefaultRequestHeaders =
@@ -37,7 +41,7 @@ namespace ConfigServiceClient.ConfigLoading
 
             http.DefaultRequestHeaders.Add("ApiKey", apiKey);
 
-            return new DefaultHttpClient(http);
+            return http;
         }
     }
 }

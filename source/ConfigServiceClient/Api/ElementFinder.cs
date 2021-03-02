@@ -7,15 +7,15 @@ namespace ConfigServiceClient.Api
 {
     internal class ElementFinder<TElement> where TElement : class
     {
-        private readonly Func<OptionGroup, Func<string, TElement>> _findMethod;
+        private readonly Func<IOptionGroup, Func<string, TElement>> _findMethod;
 
-        public ElementFinder(Expression<Func<OptionGroup, Func<string, TElement>>> findMethod)
+        public ElementFinder(Expression<Func<IOptionGroup, Func<string, TElement>>> findMethod)
         {
             if (findMethod == null) throw new ArgumentNullException(nameof(findMethod));
             _findMethod = findMethod.Compile();
         }
 
-        public TElement Find(OptionGroup target, params string[] pathSegments)
+        public TElement Find(IOptionGroup target, params string[] pathSegments)
         {
             while (true)
             {

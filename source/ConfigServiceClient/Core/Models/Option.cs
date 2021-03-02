@@ -1,15 +1,14 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ConfigServiceClient.Core.Models
+﻿namespace ConfigServiceClient.Core.Models
 {
     public sealed class Option
     {
-        public string Name { get; set; }
+        public string Name { get; }
+        public object Value { get; }
 
-        [JsonPropertyName("value")]
-        public object ValueKind { get; set; }
-
-        [JsonIgnore] 
-        public object Value => new JsonValueParser(ValueKind).Parse();
+        public Option(string name, object value)
+        {
+            Name = name;
+            Value = value;
+        }
     }
 }

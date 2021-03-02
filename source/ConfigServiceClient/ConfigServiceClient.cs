@@ -1,67 +1,41 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ConfigServiceClient.Abstractions;
 using ConfigServiceClient.Api;
-using ConfigServiceClient.ConfigLoading;
-using ConfigServiceClient.Core.Exceptions;
-using ConfigServiceClient.Core.Models;
+using ConfigServiceClient.Persistence;
 
 namespace ConfigServiceClient
 {
     public class ConfigServiceClient
     {
-        private readonly IHttpClient _httpClient;
-        private readonly string _project;
+        private readonly ConfigStorage _configStorage;
 
-        public ConfigServiceClient(string configServiceApiEndpoint, string project, string apiKey)
+        public ConfigServiceClient(Action<ConfigClientOptions> configure = null)
         {
-            if (string.IsNullOrWhiteSpace(project))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(project));
-            }
+            var options = new ConfigClientOptions();
+            configure?.Invoke(options);
 
-            _httpClient = HttpClientFactory.GetHttpClient(configServiceApiEndpoint, apiKey, GetType().Assembly.GetName().Version?.ToString());
-            _project = project;
+            _configStorage = new ConfigStorage(options);
         }
 
-        protected ConfigServiceClient(string project, IHttpClient httpClient)
+        protected ConfigServiceClient()
         {
-            _httpClient = httpClient;
-            _project = project;
+
+        }
+
+        protected ConfigServiceClient(ConfigStorage configStorage)
+        {
+            _configStorage = configStorage;
         }
 
         public async Task<IConfigObject> LoadAsync(string environment)
         {
-            var g = await GetOptionGroup(environment);
+            var g = await _configStorage.GetConfig(environment);
             return new ConfigObject(g);
         }
 
         public Task<T> LoadAsync<T>(string environment) where T : class
         {
-            return GetConfig<T>(environment);
-        }
-
-        private async Task<T> GetConfig<T>(string environment) where T : class
-        {
-            if (string.IsNullOrWhiteSpace(environment))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(environment));
-            }
-            return await _httpClient.GetAsync<T>($"api/projects/{_project}/configs/{environment}") ?? throw GetNotFoundEx(_project, environment);
-        }
-
-        private async Task<OptionGroup> GetOptionGroup(string environment)
-        {
-            if (string.IsNullOrWhiteSpace(environment))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(environment));
-            }
-            return await _httpClient.GetAsync<OptionGroup>($"api/projects/{_project}/option-groups/{environment}") ?? throw GetNotFoundEx(_project, environment);
-        }
-
-        private static ConfigNotFoundException GetNotFoundEx(string proj, string env)
-        {
-            return ConfigNotFoundException.Create($"Config \"{proj}.{env}\" does not exist");
+            return _configStorage.GetConfig<T>(environment);
         }
     }
 }

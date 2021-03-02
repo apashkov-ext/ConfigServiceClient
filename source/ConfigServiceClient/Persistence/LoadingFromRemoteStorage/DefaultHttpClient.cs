@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ConfigServiceClient.Abstractions;
 
-namespace ConfigServiceClient.ConfigLoading
+namespace ConfigServiceClient.Persistence.LoadingFromRemoteStorage
 {
     public class DefaultHttpClient : IHttpClient
     {
@@ -14,10 +13,10 @@ namespace ConfigServiceClient.ConfigLoading
             _client = client;
         }
 
-        public async Task<T> GetAsync<T>(string uri)
+        public async Task<string> GetAsync(string uri)
         {
             var resp = await ExecuteHttpMethod(() => _client.GetAsync(uri));
-            return JsonDeserializer.Deserialize<T>(await resp.Content.ReadAsStringAsync());
+            return await resp.Content.ReadAsStringAsync();
         }
 
         private static async Task<T> FromJsonContent<T>(HttpContent content)

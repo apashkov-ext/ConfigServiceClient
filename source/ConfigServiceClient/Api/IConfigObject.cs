@@ -1,4 +1,4 @@
-﻿namespace ConfigServiceClient.Abstractions
+﻿namespace ConfigServiceClient.Api
 {
     public interface IConfigObject
     {

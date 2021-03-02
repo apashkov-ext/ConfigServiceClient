@@ -1,5 +1,4 @@
 ﻿using System;
-using ConfigServiceClient.Abstractions;
 using ConfigServiceClient.Core.Exceptions;
 using ConfigServiceClient.Core.Models;
 
@@ -7,9 +6,9 @@ namespace ConfigServiceClient.Api
 {
     public class ConfigObject : IConfigObject
     {
-        private readonly OptionGroup _root;
+        private readonly IOptionGroup _root;
 
-        internal ConfigObject(OptionGroup root)
+        internal ConfigObject(IOptionGroup root)
         {
             _root = root ?? throw new ArgumentNullException(nameof(root));
         }
@@ -61,7 +60,7 @@ namespace ConfigServiceClient.Api
         public IConfigObject GetNestedObject(string path)
         {
             var splitted = SplitPath(path);
-            var group = new ElementFinder<OptionGroup>(x => x.FindNested).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
+            var group = new ElementFinder<IOptionGroup>(x => x.FindNested).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
 
             return new ConfigObject(group);
         }
