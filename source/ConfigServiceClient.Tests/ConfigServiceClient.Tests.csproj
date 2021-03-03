@@ -24,4 +24,8 @@
     <ProjectReference Include="..\ConfigServiceClient\ConfigServiceClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IntegrationTests\" />
+  </ItemGroup>
+
 </Project>

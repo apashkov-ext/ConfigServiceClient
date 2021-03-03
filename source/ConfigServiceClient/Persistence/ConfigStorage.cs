@@ -7,16 +7,22 @@ namespace ConfigServiceClient.Persistence
 {
     public class ConfigStorage : IConfigStorage
     {
-        private readonly ConfigLoader _loader;
+        private const string DoesNotExistErr = "Config does not exist";
+        private readonly IConfigLoader _loader;
 
         public ConfigStorage(ConfigClientOptions options)
         {
             _loader = new ConfigLoader(options);
         }
 
+        protected ConfigStorage(IConfigLoader loader)
+        {
+            _loader = loader;
+        }
+
         public async Task<IOptionGroup> GetConfig(string environment)
         {
-            var json = await _loader.TryLoadJson(environment) ?? throw ConfigNotFoundException.Create($"Config does not exist");
+            var json = await _loader.TryLoadJsonAsync(environment) ?? throw ConfigNotFoundException.Create(DoesNotExistErr);
             var doc = JsonDocument.Parse(json);
             var imported = new OptionGroupHierarchyImporter().ImportFromJson(doc);
 
@@ -25,7 +31,7 @@ namespace ConfigServiceClient.Persistence
 
         public async Task<T> GetConfig<T>(string environment)
         {
-            var json = await _loader.TryLoadJson(environment) ?? throw ConfigNotFoundException.Create($"Config does not exist");
+            var json = await _loader.TryLoadJsonAsync(environment) ?? throw ConfigNotFoundException.Create(DoesNotExistErr);
             return JsonDeserializer.Deserialize<T>(json);
         }
     }

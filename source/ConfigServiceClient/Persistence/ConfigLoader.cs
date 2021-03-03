@@ -5,7 +5,7 @@ using ConfigServiceClient.Persistence.LocalCaching;
 
 namespace ConfigServiceClient.Persistence
 {
-    public class ConfigLoader
+    public class ConfigLoader : IConfigLoader
     {
         private readonly string _project;
         private readonly TimeSpan _expiration;
@@ -27,7 +27,7 @@ namespace ConfigServiceClient.Persistence
             _expiration = expiration;
         }
 
-        public async Task<string> TryLoadJson(string environment)
+        public async Task<string> TryLoadJsonAsync(string environment)
         {
             var uri = $"api/projects/{_project}/configs/{environment}";
             var key = $"{_project}.{environment}";
@@ -35,7 +35,7 @@ namespace ConfigServiceClient.Persistence
             var entry = _jsonCache.Get(key);
             if (entry == null)
             {
-                return await LoadAndCache(key, uri);
+                return await LoadAndPutToCache(key, uri);
             }
 
             if (!Expired(entry.Modified, _expiration))
@@ -45,7 +45,7 @@ namespace ConfigServiceClient.Persistence
 
             try
             {
-                return await LoadAndCache(key, uri);
+                return await LoadAndPutToCache(key, uri);
             }
             catch
             {
@@ -53,7 +53,7 @@ namespace ConfigServiceClient.Persistence
             }
         }
 
-        private async Task<string> LoadAndCache(string key, string endpoint)
+        private async Task<string> LoadAndPutToCache(string key, string endpoint)
         {
             var content = await _httpClient.GetAsync(endpoint);
             if (content == null)

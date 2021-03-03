@@ -28,48 +28,4 @@ namespace App
             Console.ReadKey();
         }
     }
-
-    public class Root
-    {
-        public Validation Validation { get; set; }
-        public Logging Logging { get; set; }
-        public Test Test { get; set; }
-    }
-
-    public class Validation
-    {
-        public int ValidationLevel { get; set; }
-        public bool ValidationEnabled { get; set; }
-        public SectionValidation SectionValidation { get; set; }
-    }
-
-    public class SectionValidation
-    {
-        public string[] Sections { get; set; }
-        public bool SectionValidatorEnabled { get; set; }
-    }
-
-    public class Logging
-    {
-        public int[] TestArr { get; set; }
-        public bool LogInfo { get; set; }
-        public bool LogErrors { get; set; }
-        public string Prp { get; set; }
-        public bool LoggingEnabled { get; set; }
-    }
-
-    public class Test
-    {
-        public Nested Nested { get; set; }
-    }
-
-    public class Nested
-    {
-        public Other Other { get; set; }
-    }
-
-    public class Other
-    {
-
-    }
 }
