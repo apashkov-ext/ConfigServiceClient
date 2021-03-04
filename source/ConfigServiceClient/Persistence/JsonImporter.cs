@@ -5,12 +5,13 @@ using ConfigServiceClient.Core.Models;
 
 namespace ConfigServiceClient.Persistence
 {
-    internal class OptionGroupHierarchyImporter
+    public class JsonImporter : IJsonImporter<IOptionGroup>
     {
-        public IOptionGroup ImportFromJson(JsonDocument json)
+        public IOptionGroup ImportFromJson(string json)
         {
+            var doc = JsonDocument.Parse(json);
             var rootGroup = new OptionGroup("");
-            FillGroup(rootGroup, json.RootElement);
+            FillGroup(rootGroup, doc.RootElement);
             return rootGroup;
         }
 

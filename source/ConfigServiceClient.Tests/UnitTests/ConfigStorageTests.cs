@@ -1,31 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ConfigServiceClient.Persistence.LoadingFromRemoteStorage;
-using ConfigServiceClient.Persistence.LocalCaching;
+﻿using ConfigServiceClient.Core.Exceptions;
+using ConfigServiceClient.Core.Models;
+using ConfigServiceClient.Persistence;
 using ConfigServiceClient.Tests.Fixtures;
 using Moq;
 using Xunit;
 
 namespace ConfigServiceClient.Tests.UnitTests
 {
+    public class Config
+    {
+        public string Name { get; set; }
+    }
+
     public class ConfigStorageTests
     {
         [Fact]
-        public async void LoadAsync_EmptyRemoteConfigEmptyCachedConfig_ThrowsError()
+        public async void GetConfigAsync_EmptyRemoteConfigEmptyCachedConfig_ThrowsError()
         {
-            var clientMock = new Mock<IHttpClient>();
-            clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => null);
+            var loaderMock = new Mock<IConfigLoader>();
+            loaderMock.Setup(x => x.TryLoadJsonAsync(It.IsAny<string>())).ReturnsAsync(() => null);
 
-            var cacheMock = new Mock<IJsonCache>();
-            cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => null);
+            var importerMock = new Mock<IJsonImporter<IOptionGroup>>();
+            importerMock.Setup(x => x.ImportFromJson(It.IsAny<string>())).Returns(() => null);
 
-            var loader = new TestableConfigLoader(clientMock.Object, cacheMock.Object, TimeSpan.Zero);
-            var json = await loader.TryLoadJsonAsync("env");
+            var storage = new TestableConfigStorage(loaderMock.Object, importerMock.Object);
 
-            Assert.Null(json);
+            await Assert.ThrowsAsync<ConfigNotFoundException>(() => storage.GetConfigAsync<object>("env"));
+        }
+
+        [Fact]
+        public async void GetConfigAsync_GetOfTypeIOptionsGroup_ReturnsIOptionGroupInstance()
+        {
+            const string config = "{ \"name\":\"Config\" }";
+
+            var loaderMock = new Mock<IConfigLoader>();
+            loaderMock.Setup(x => x.TryLoadJsonAsync(It.IsAny<string>())).ReturnsAsync(() => config);
+
+            var importerMock = new Mock<IJsonImporter<IOptionGroup>>();
+            importerMock.Setup(x => x.ImportFromJson(It.IsAny<string>())).Returns(() => new OptionGroup(""));
+
+            var storage = new TestableConfigStorage(loaderMock.Object, importerMock.Object);
+            var result = await storage.GetConfigAsync<IOptionGroup>("env");
+
+            Assert.IsAssignableFrom<IOptionGroup>(result);
+        }
+
+        [Fact]
+        public async void GetConfigAsync_GetOfTypeUserClass_ReturnsUserClassInstance()
+        {
+            const string config = "{ \"name\":\"Config\" }";
+
+            var loaderMock = new Mock<IConfigLoader>();
+            loaderMock.Setup(x => x.TryLoadJsonAsync(It.IsAny<string>())).ReturnsAsync(() => config);
+
+            var importerMock = new Mock<IJsonImporter<IOptionGroup>>();
+            importerMock.Setup(x => x.ImportFromJson(It.IsAny<string>())).Returns(() => null);
+
+            var storage = new TestableConfigStorage(loaderMock.Object, importerMock.Object);
+            var result = await storage.GetConfigAsync<Config>("env");
+
+            Assert.IsType<Config>(result);
         }
     }
 }

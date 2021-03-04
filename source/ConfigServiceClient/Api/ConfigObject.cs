@@ -16,7 +16,7 @@ namespace ConfigServiceClient.Api
         public object GetProperty(string path)
         {
             var splitted = SplitPath(path);
-            var opt = new ElementFinder<Option>(x => x.FindOption).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
+            var opt = new OptionGroupChildElementFinder<Option>(x => x.FindOption).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
 
             return opt.Value;
         }
@@ -60,7 +60,7 @@ namespace ConfigServiceClient.Api
         public IConfigObject GetNestedObject(string path)
         {
             var splitted = SplitPath(path);
-            var group = new ElementFinder<IOptionGroup>(x => x.FindNested).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
+            var group = new OptionGroupChildElementFinder<IOptionGroup>(x => x.FindNested).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
 
             return new ConfigObject(group);
         }

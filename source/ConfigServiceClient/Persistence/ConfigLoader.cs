@@ -15,7 +15,7 @@ namespace ConfigServiceClient.Persistence
         public ConfigLoader(ConfigClientOptions options)
         {
             _project = options.Project;
-            _expiration = options.Expiration;
+            _expiration = options.CacheExpiration;
             _httpClient = HttpClientFactory.GetHttpClient(options.ConfigServiceApiEndpoint, options.ApiKey, GetType().Assembly.GetName().Version?.ToString());
             _jsonCache = new JsonCache(options.Project);
         }

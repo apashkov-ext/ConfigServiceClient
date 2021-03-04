@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace ConfigServiceClient.Core.Models
 {
-    public sealed class OptionGroup : IOptionGroup, IOptionGroupBuilder
+    public class OptionGroup : IOptionGroup, IOptionGroupBuilder
     {
-        private readonly List<Option> _options = new List<Option>();
-        private readonly List<IOptionGroup> _nestedGroups = new List<IOptionGroup>();
+        protected readonly List<Option> Options = new List<Option>();
+        protected readonly List<IOptionGroup> NestedGroups = new List<IOptionGroup>();
 
         public string Name { get; }
 
@@ -16,27 +16,71 @@ namespace ConfigServiceClient.Core.Models
             Name = name;
         }
 
+        protected OptionGroup(string name, IEnumerable<Option> options, IEnumerable<IOptionGroup> nestedGroups)
+        {
+            Name = name;
+            Options = options.ToList();
+            NestedGroups = nestedGroups.ToList();
+        }
+
         public Option FindOption(string name)
         {
-            return _options.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            return Options.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public IOptionGroup FindNested(string name)
         {
-            return _nestedGroups.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            return NestedGroups.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public bool Equals(IOptionGroup group)
+        {
+            if (group == null)
+            {
+                return false;
+            }
+
+            if (!Name.Equals(group.Name, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return false;
+            }
+
+            foreach (var o in Options)
+            {
+                if (group.FindOption(o.Name) == null)
+                {
+                    return false;
+                }
+            }
+
+            foreach (var nested in NestedGroups)
+            {
+                var existed = group.FindNested(nested.Name);
+                if (existed == null)
+                {
+                    return false;
+                }
+
+                if (!nested.Equals(existed))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public IOptionGroupBuilder AddNested(string name)
         {
             var group = new OptionGroup(name);
-            _nestedGroups.Add(group);
+            NestedGroups.Add(group);
             return group;
         }
 
         public Option AddOption(string name, object value)
         {
             var opt = new Option(name, value);
-            _options.Add(opt);
+            Options.Add(opt);
             return opt;
         }
     }

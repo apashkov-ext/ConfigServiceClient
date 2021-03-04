@@ -1,9 +1,10 @@
-﻿using ConfigServiceClient.Persistence;
+﻿using ConfigServiceClient.Core.Models;
+using ConfigServiceClient.Persistence;
 
 namespace ConfigServiceClient.Tests.Fixtures
 {
     internal class TestableConfigStorage : ConfigStorage
     {
-        public TestableConfigStorage(IConfigLoader loader) : base(loader) {}
+        public TestableConfigStorage(IConfigLoader loader, IJsonImporter<IOptionGroup> importer) : base(loader, importer) {}
     }
 }
