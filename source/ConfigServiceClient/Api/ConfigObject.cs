@@ -13,27 +13,7 @@ namespace ConfigServiceClient.Api
             _root = root ?? throw new ArgumentNullException(nameof(root));
         }
 
-        public object GetProperty(string path)
-        {
-            var splitted = SplitPath(path);
-            var opt = new OptionGroupChildElementFinder<Option>(x => x.FindOption).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
-
-            return opt.Value;
-        }
-
-        public object SafeGetProperty(string path)
-        {
-            try
-            {
-                return GetProperty(path);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public T GetProperty<T>(string path)
+        public T GetValue<T>(string path)
         {
             var value = GetProperty(path);
             var type = typeof(T);
@@ -45,11 +25,19 @@ namespace ConfigServiceClient.Api
             return (T) value;
         }
 
-        public T SafeGetProperty<T>(string path)
+        private object GetProperty(string path)
+        {
+            var splitted = SplitPath(path);
+            var opt = new OptionGroupChildElementFinder<Option>(x => x.FindOption).Find(_root, splitted) ?? throw InvalidPathException.Create(_root.Name, path);
+
+            return opt.Value;
+        }
+
+        public T SafeGetValue<T>(string path)
         {
             try
             {
-                return GetProperty<T>(path);
+                return GetValue<T>(path);
             }
             catch
             {

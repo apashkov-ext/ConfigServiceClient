@@ -84,7 +84,7 @@ namespace ConfigServiceClient.Tests.UnitTests
             var parent = new TestableOptionGroup("", new List<Option>(), new List<IOptionGroup>());
             var finder = new OptionGroupChildElementFinder<Option>(x => x.FindOption);
 
-            Assert.Throws<ApplicationException>(() => finder.Find(parent, "property"));
+            Assert.Throws<ApplicationException>(() => finder.Find(parent, "nested.prop"));
         }
     }
 }
