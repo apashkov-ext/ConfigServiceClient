@@ -1,4 +1,4 @@
-﻿using ConfigServiceClient.Persistence;
+﻿using ConfigServiceClient.Persistence.Storage;
 
 namespace ConfigServiceClient.Tests.Fixtures
 {

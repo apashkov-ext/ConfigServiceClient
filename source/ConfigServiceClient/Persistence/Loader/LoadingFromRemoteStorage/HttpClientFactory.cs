@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace ConfigServiceClient.Persistence.LoadingFromRemoteStorage
+namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 {
     public static class HttpClientFactory
     {

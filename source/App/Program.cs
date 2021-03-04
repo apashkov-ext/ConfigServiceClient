@@ -2,7 +2,7 @@
 using ConfigServiceClient;
 using ConfigServiceClient.Core.Models;
 using ConfigServiceClient.Persistence;
-using ConfigServiceClient.Persistence.LoadingFromRemoteStorage;
+using ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage;
 using ConfigServiceClient.Persistence.LocalCaching;
 
 namespace App

@@ -1,6 +1,6 @@
 ﻿using System;
-using ConfigServiceClient.Persistence;
-using ConfigServiceClient.Persistence.LoadingFromRemoteStorage;
+using ConfigServiceClient.Persistence.Loader;
+using ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage;
 using ConfigServiceClient.Persistence.LocalCaching;
 
 namespace ConfigServiceClient.Tests.Fixtures

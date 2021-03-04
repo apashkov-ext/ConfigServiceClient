@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ConfigServiceClient.Persistence.Serialization;
 
-namespace ConfigServiceClient.Persistence.LoadingFromRemoteStorage
+namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 {
     public class DefaultHttpClient : IHttpClient
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ConfigServiceClient.Persistence.LoadingFromRemoteStorage;
+using ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage;
 using ConfigServiceClient.Persistence.LocalCaching;
 
-namespace ConfigServiceClient.Persistence
+namespace ConfigServiceClient.Persistence.Loader
 {
     public class ConfigLoader : IConfigLoader
     {

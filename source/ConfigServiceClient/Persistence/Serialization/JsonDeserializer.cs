@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ConfigServiceClient.Persistence
+namespace ConfigServiceClient.Persistence.Serialization
 {
     internal static class JsonDeserializer
     {

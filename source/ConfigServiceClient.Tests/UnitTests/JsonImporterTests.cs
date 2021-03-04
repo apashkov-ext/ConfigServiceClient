@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ConfigServiceClient.Core.Models;
-using ConfigServiceClient.Persistence;
+using ConfigServiceClient.Persistence.Import;
 using ConfigServiceClient.Tests.Fixtures;
 using Xunit;
 

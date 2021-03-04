@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using ConfigServiceClient.Core.Models;
 
-namespace ConfigServiceClient.Persistence
+namespace ConfigServiceClient.Persistence.Import
 {
     public class JsonImporter : IJsonImporter<IOptionGroup>
     {

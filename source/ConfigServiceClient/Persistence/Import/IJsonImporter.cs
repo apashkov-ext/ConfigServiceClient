@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace ConfigServiceClient.Persistence
+﻿namespace ConfigServiceClient.Persistence.Import
 {
     public interface IJsonImporter<out TResult> where TResult : class
     {

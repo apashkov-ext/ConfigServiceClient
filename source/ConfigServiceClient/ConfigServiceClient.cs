@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ConfigServiceClient.Api;
 using ConfigServiceClient.Core.Models;
 using ConfigServiceClient.Persistence;
+using ConfigServiceClient.Persistence.Storage;
 
 namespace ConfigServiceClient
 {

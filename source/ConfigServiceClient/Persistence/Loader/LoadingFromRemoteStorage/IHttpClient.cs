@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ConfigServiceClient.Persistence.LoadingFromRemoteStorage
+namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 {
     public interface IHttpClient
     {

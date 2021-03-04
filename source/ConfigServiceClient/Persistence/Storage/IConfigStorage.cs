@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ConfigServiceClient.Persistence
+namespace ConfigServiceClient.Persistence.Storage
 {
     public interface IConfigStorage
     {

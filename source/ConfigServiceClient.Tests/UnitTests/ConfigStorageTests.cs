@@ -1,6 +1,7 @@
 ﻿using ConfigServiceClient.Core.Exceptions;
 using ConfigServiceClient.Core.Models;
-using ConfigServiceClient.Persistence;
+using ConfigServiceClient.Persistence.Import;
+using ConfigServiceClient.Persistence.Loader;
 using ConfigServiceClient.Tests.Fixtures;
 using Moq;
 using Xunit;

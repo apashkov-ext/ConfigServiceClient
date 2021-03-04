@@ -1,5 +1,5 @@
 ﻿using System;
-using ConfigServiceClient.Persistence.LoadingFromRemoteStorage;
+using ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage;
 using ConfigServiceClient.Persistence.LocalCaching;
 using ConfigServiceClient.Tests.Fixtures;
 using Moq;

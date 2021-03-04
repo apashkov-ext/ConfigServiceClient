@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ConfigServiceClient.Persistence
+namespace ConfigServiceClient.Persistence.Loader
 {
     public interface IConfigLoader
     {

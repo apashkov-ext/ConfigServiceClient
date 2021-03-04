@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Polly;
 
-namespace ConfigServiceClient.Persistence.LoadingFromRemoteStorage
+namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 {
     internal class HttpMessageHandler : DelegatingHandler
     {
