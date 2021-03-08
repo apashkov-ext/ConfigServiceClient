@@ -6,26 +6,26 @@ namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 {
     public static class HttpClientFactory
     {
-        public static IHttpClient GetHttpClient(string configServiceApiEndpoint, string apiKey, string appVersion)
+        public static IHttpClient GetHttpClient(ConfigClientOptions options, string appVersion)
         {
-            if (string.IsNullOrWhiteSpace(configServiceApiEndpoint))
+            if (string.IsNullOrWhiteSpace(options.ConfigServiceApiEndpoint))
             {
-                throw new ArgumentException("Value cannot be null or whitespace", nameof(configServiceApiEndpoint));
+                throw new ArgumentException("Value cannot be null or whitespace", nameof(options.ConfigServiceApiEndpoint));
             }
 
-            if (string.IsNullOrWhiteSpace(apiKey))
+            if (string.IsNullOrWhiteSpace(options.ApiKey))
             {
-                throw new ArgumentException("Value cannot be null or whitespace", nameof(apiKey));
+                throw new ArgumentException("Value cannot be null or whitespace", nameof(options.ApiKey));
             }
 
-            return new DefaultHttpClient(GetHttp(configServiceApiEndpoint, apiKey, appVersion));
+            return new DefaultHttpClient(GetHttp(options, appVersion));
         }
 
-        private static HttpClient GetHttp(string configServiceApiEndpoint, string apiKey, string appVersion)
+        private static HttpClient GetHttp(ConfigClientOptions options, string appVersion)
         {
-            var http = new HttpClient(new HttpMessageHandler(new HttpClientHandler(), 3))
+            var http = new HttpClient(new HttpMessageHandler(new HttpClientHandler(), options.RemoteConfigRequestingAttemptsCount, options.RemoteConfigRequestingTimeout))
             {
-                BaseAddress = new Uri(configServiceApiEndpoint),
+                BaseAddress = new Uri(options.ConfigServiceApiEndpoint),
                 DefaultRequestHeaders =
                 {
                     Accept =
@@ -39,7 +39,7 @@ namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
                 }
             };
 
-            http.DefaultRequestHeaders.Add("ApiKey", apiKey);
+            http.DefaultRequestHeaders.Add("ApiKey", options.ApiKey);
 
             return http;
         }

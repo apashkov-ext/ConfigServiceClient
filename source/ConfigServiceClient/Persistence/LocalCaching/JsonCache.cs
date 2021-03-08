@@ -16,7 +16,7 @@ namespace ConfigServiceClient.Persistence.LocalCaching
 
         public void Put(string key, string content)
         {
-            using (var db = new LiteDatabase(GetStoragePath(StorageName)))
+            using (var db = new LiteDatabase(Path.Combine(CreateAndGetStorageDir(), StorageName)))
             {
                 var col = db.GetCollection<JsonCacheEntry>(_project);
                 var entry = col.FindById(key) ?? new JsonCacheEntry { Id = key, Content = content };
@@ -28,17 +28,24 @@ namespace ConfigServiceClient.Persistence.LocalCaching
 
         public JsonCacheEntry Get(string key)
         {
-            using (var db = new LiteDatabase(GetStoragePath(StorageName)))
+            using (var db = new LiteDatabase(Path.Combine(CreateAndGetStorageDir(), StorageName)))
             {
                 return db.GetCollection<JsonCacheEntry>(_project).FindById(key);
             }
         }
 
-        private static string GetStoragePath(string fileName)
+        private static string CreateAndGetStorageDir()
         {
             const string appDir = "ConfigServiceClient";
-            var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.DoNotVerify);
-            return Path.Combine(appData, appDir, fileName);
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify);
+            var path = Path.Combine(appData, appDir);
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
         }
     }
 }

@@ -9,6 +9,10 @@
     <Company>your_company</Company>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5|AnyCPU'">
+    <DocumentationFile>F:\git\ConfigServiceClient\source\ConfigServiceClient\ConfigServiceClient.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="System.Net.Http" />
     <PackageReference Include="System.Text.Json" Version="5.0.1" />

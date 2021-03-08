@@ -16,7 +16,7 @@ namespace ConfigServiceClient.Persistence.Loader
         {
             _project = options.Project;
             _expiration = options.CacheExpiration;
-            _httpClient = HttpClientFactory.GetHttpClient(options.ConfigServiceApiEndpoint, options.ApiKey, GetType().Assembly.GetName().Version?.ToString());
+            _httpClient = HttpClientFactory.GetHttpClient(options, GetType().Assembly.GetName().Version?.ToString());
             _jsonCache = new JsonCache(options.Project);
         }
 
@@ -67,6 +67,11 @@ namespace ConfigServiceClient.Persistence.Loader
 
         private static bool Expired(DateTime modified, TimeSpan expiration)
         {
+            if (expiration == TimeSpan.Zero)
+            {
+                return false;
+            }
+
             return DateTime.Now - modified > expiration;
         }
     }
