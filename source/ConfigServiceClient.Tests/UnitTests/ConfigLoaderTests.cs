@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage;
 using ConfigServiceClient.Persistence.LocalCaching;
 using ConfigServiceClient.Tests.Fixtures;
@@ -39,6 +40,24 @@ namespace ConfigServiceClient.Tests.UnitTests
             var json = await loader.TryLoadJsonAsync("env");
 
             Assert.Equal(expected, json);
+        }
+
+        [Fact]
+        public async void TryLoadJsonAsync_NonEmptyRemoteConfigEmptyCachedConfig_PutsToCache()
+        {
+            const string expected = "{ \"name\":\"Config\" }";
+
+            var clientMock = new Mock<IHttpClient>();
+            clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => expected);
+
+            var cache = new TestableJsonCache();
+
+            var loader = new TestableConfigLoader(clientMock.Object, cache, TimeSpan.FromHours(1));
+            await loader.TryLoadJsonAsync("env");
+
+            var cached = cache.Last();
+
+            Assert.Equal(expected, cached.Content);
         }
 
         [Fact]
@@ -93,7 +112,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         }
 
         [Fact]
-        public async void TryLoadJsonAsync_ExpiredCacheConfig_ReturnsRemoteConfig()
+        public async void TryLoadJsonAsync_ExpiredCachedConfig_ReturnsRemoteConfig()
         {
             const string remote = "{ \"name\":\"RemoteConfig\" }";
             const string cached = "{ \"name\":\"CachedConfig\" }";
@@ -116,7 +135,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         }
 
         [Fact]
-        public async void TryLoadJsonAsync_NonExpiredCacheConfig_ReturnsCached()
+        public async void TryLoadJsonAsync_NonExpiredCachedConfig_ReturnsCached()
         {
             const string remote = "{ \"name\":\"RemoteConfig\" }";
             const string cached = "{ \"name\":\"CachedConfig\" }";
@@ -139,7 +158,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         }
 
         [Fact]
-        public async void TryLoadJsonAsync_ExpiredCacheConfigThrowsWhilePuttingNewConfig_ReturnsExpired()
+        public async void TryLoadJsonAsync_ExpiredCachedConfigThrowsWhilePuttingNewConfig_ReturnsExpired()
         {
             const string remote = "{ \"name\":\"RemoteConfig\" }";
             const string cached = "{ \"name\":\"CachedConfig\" }";
