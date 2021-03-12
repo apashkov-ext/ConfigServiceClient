@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 {
     public interface IHttpClient
     {
-        Task<string> GetAsync(string uri);
+        Task<HttpResponseMessage> GetAsync(string requestUri);
     }
 }

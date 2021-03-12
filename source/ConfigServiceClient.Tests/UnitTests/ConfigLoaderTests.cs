@@ -13,7 +13,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         [Fact]
         public async void TryLoadJsonAsync_EmptyRemoteConfigEmptyCachedConfig_ReturnsNull()
         {
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => null);
 
             var cacheMock = new Mock<IJsonCache>();
@@ -30,7 +30,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string expected = "{}";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => expected);
 
             var cacheMock = new Mock<IJsonCache>();
@@ -47,7 +47,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string expected = "{ \"name\":\"Config\" }";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => expected);
 
             var cache = new TestableJsonCache();
@@ -65,7 +65,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string expected = "{ \"name\":\"Config\" }";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => null);
 
             var cacheMock = new Mock<IJsonCache>();
@@ -82,7 +82,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string expected = "{ \"name\":\"Config\" }";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var cacheMock = new Mock<IJsonCache>();
@@ -99,7 +99,7 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string expected = "{ \"name\":\"Config\" }";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var cacheMock = new Mock<IJsonCache>();
@@ -117,7 +117,7 @@ namespace ConfigServiceClient.Tests.UnitTests
             const string remote = "{ \"name\":\"RemoteConfig\" }";
             const string cached = "{ \"name\":\"CachedConfig\" }";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => remote);
 
             var cacheMock = new Mock<IJsonCache>();
@@ -140,7 +140,7 @@ namespace ConfigServiceClient.Tests.UnitTests
             const string remote = "{ \"name\":\"RemoteConfig\" }";
             const string cached = "{ \"name\":\"CachedConfig\" }";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => remote);
 
             var cacheMock = new Mock<IJsonCache>();
@@ -163,7 +163,7 @@ namespace ConfigServiceClient.Tests.UnitTests
             const string remote = "{ \"name\":\"RemoteConfig\" }";
             const string cached = "{ \"name\":\"CachedConfig\" }";
 
-            var clientMock = new Mock<IHttpClient>();
+            var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => remote);
 
             var cacheMock = new Mock<IJsonCache>();

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ConfigServiceClient</name>
+    </assembly>
+    <members>
+        <member name="T:ConfigServiceClient.Api.IConfigObject">
+            <summary>
+            Hierarchycally structured configuration object.
+            Wrapper over JSON-like object.
+            </summary>
+        </member>
+        <member name="M:ConfigServiceClient.Api.IConfigObject.GetValue``1(System.String)">
+            <summary>
+            Returns property value. Throws exception if property does not exist.
+            </summary>
+            <typeparam name="T">Type of property value.</typeparam>
+            <param name="path">Property path in dot notation</param>
+        </member>
+        <member name="M:ConfigServiceClient.Api.IConfigObject.SafeGetValue``1(System.String)">
+            <summary>
+            Returns property value. Does not throw exception if property does not exist but returns null.
+            </summary>
+            <typeparam name="T">Type of property value.</typeparam>
+            <param name="path">Property path in dot notation</param>
+        </member>
+        <member name="M:ConfigServiceClient.Api.IConfigObject.GetNestedObject(System.String)">
+            <summary>
+            Returns property value as inner object. Throws exception if property does not exist.
+            </summary>
+            <param name="path">Property path in dot notation</param>
+        </member>
+        <member name="M:ConfigServiceClient.Api.IConfigObject.SafeGetNestedObject(System.String)">
+            <summary>
+            Returns property value as inner object. Does not throw exception if property does not exist but returns null.
+            </summary>
+            <param name="path">Property path in dot notation</param>
+        </member>
+        <member name="T:ConfigServiceClient.Options.ConfigClientOptions">
+            <summary>
+            Configuration Service Client options.
+            </summary>
+        </member>
+        <member name="P:ConfigServiceClient.Options.ConfigClientOptions.ConfigServiceApiEndpoint">
+            <summary>
+            Configuration Service instance web api url.
+            </summary>
+        </member>
+        <member name="P:ConfigServiceClient.Options.ConfigClientOptions.Project">
+            <summary>
+            Name of the project for which the configuration will be retrieved.
+            </summary>
+        </member>
+        <member name="P:ConfigServiceClient.Options.ConfigClientOptions.ApiKey">
+            <summary>
+            Key to access the project configuration. This key is generated when creating a project using the UI client or web api.
+            </summary>
+        </member>
+        <member name="P:ConfigServiceClient.Options.ConfigClientOptions.CacheExpiration">
+            <summary>
+            Cached configuration lifetime. If value equals to TimeSpan.Zero cached config never will be expired.
+            Default value: TimeSpan.Zero.
+            </summary>
+        </member>
+        <member name="P:ConfigServiceClient.Options.ConfigClientOptions.RemoteConfigRequestingAttemptsCount">
+            <summary>
+            Number of attempts to request a remote configuration via the web api.
+            Default value: 2.
+            </summary>
+        </member>
+        <member name="P:ConfigServiceClient.Options.ConfigClientOptions.RemoteConfigRequestingTimeout">
+            <summary>
+            Timeout of remote configuration requesting attempt.
+            Default value: 2 sec.
+            </summary>
+        </member>
+    </members>
+</doc>

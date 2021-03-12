@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ConfigServiceClient.Options;
 using LiteDB;
 
 namespace ConfigServiceClient.Persistence.LocalCaching
@@ -9,9 +10,9 @@ namespace ConfigServiceClient.Persistence.LocalCaching
         private const string StorageName = "configurationCache.db";
         private readonly string _project;
 
-        public JsonCache(string project)
+        public JsonCache(ConfigClientOptions options)
         {
-            _project = project;
+            _project = options.Project;
         }
 
         public void Put(string key, string content)

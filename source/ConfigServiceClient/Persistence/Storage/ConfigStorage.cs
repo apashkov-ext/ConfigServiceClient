@@ -13,13 +13,7 @@ namespace ConfigServiceClient.Persistence.Storage
         private readonly IConfigLoader _loader;
         private readonly IJsonImporter<IOptionGroup> _importer;
 
-        public ConfigStorage(ConfigClientOptions options)
-        {
-            _loader = new ConfigLoader(options);
-            _importer = new JsonImporter();
-        }
-
-        protected ConfigStorage(IConfigLoader loader, IJsonImporter<IOptionGroup> importer)
+        public ConfigStorage(IConfigLoader loader, IJsonImporter<IOptionGroup> importer)
         {
             _loader = loader;
             _importer = importer;

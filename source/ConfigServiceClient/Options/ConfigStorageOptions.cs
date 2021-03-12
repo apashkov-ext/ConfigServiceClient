@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConfigServiceClient
+namespace ConfigServiceClient.Options
 {
     /// <summary>
     /// Configuration Service Client options.
@@ -28,24 +28,11 @@ namespace ConfigServiceClient
          /// </summary>
         public TimeSpan CacheExpiration { get; set; } = TimeSpan.Zero;
 
-        private int _remoteConfigRequestingAttemptsCount = 2;
         /// <summary>
         /// Number of attempts to request a remote configuration via the web api.
         /// Default value: 2.
         /// </summary>
-        public int RemoteConfigRequestingAttemptsCount
-        {
-            get => _remoteConfigRequestingAttemptsCount;
-            set
-            {
-                if (value <= 0)
-                {
-                    throw new ApplicationException($"Parameter {nameof(RemoteConfigRequestingAttemptsCount)} should be greater than zero.");
-                }
-
-                _remoteConfigRequestingAttemptsCount = value;
-            }
-        }
+        public int RemoteConfigRequestingAttemptsCount { get; set; } = 2;
 
         /// <summary>
         /// Timeout of remote configuration requesting attempt.

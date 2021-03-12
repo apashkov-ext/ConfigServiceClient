@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ConfigServiceClient.Options;
 using ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage;
 using ConfigServiceClient.Persistence.LocalCaching;
 
@@ -9,20 +10,20 @@ namespace ConfigServiceClient.Persistence.Loader
     {
         private readonly string _project;
         private readonly TimeSpan _expiration;
-        private readonly IHttpClient _httpClient;
+        private readonly IRemoteJsonLoader _jsonLoader;
         private readonly IJsonCache _jsonCache;
 
-        public ConfigLoader(ConfigClientOptions options)
+        public ConfigLoader(IRemoteJsonLoader jsonLoader, IJsonCache jsonCache, ConfigClientOptions options)
         {
+            _jsonLoader = jsonLoader;
+            _jsonCache = jsonCache;
             _project = options.Project;
             _expiration = options.CacheExpiration;
-            _httpClient = HttpClientFactory.GetHttpClient(options, GetType().Assembly.GetName().Version?.ToString());
-            _jsonCache = new JsonCache(options.Project);
         }
 
-        protected ConfigLoader(IHttpClient httpClient, IJsonCache jsonCache, TimeSpan expiration)
+        protected ConfigLoader(IRemoteJsonLoader jsonLoader, IJsonCache jsonCache, TimeSpan expiration)
         {
-            _httpClient = httpClient;
+            _jsonLoader = jsonLoader;
             _jsonCache = jsonCache;
             _expiration = expiration;
         }
@@ -55,7 +56,7 @@ namespace ConfigServiceClient.Persistence.Loader
 
         private async Task<string> LoadAndPutToCache(string key, string endpoint)
         {
-            var content = await _httpClient.GetAsync(endpoint);
+            var content = await _jsonLoader.GetAsync(endpoint);
             if (content == null)
             {
                 return null;

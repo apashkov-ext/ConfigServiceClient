@@ -2,21 +2,21 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ConfigServiceClient.Options;
 using Polly;
 
 namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 {
-    internal class HttpMessageHandler : DelegatingHandler
+    internal class HttpMessageHandlerWithPolicy : DelegatingHandler
     {
         private readonly Random _jitterer = new Random();
-        private readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(4);
         private readonly int _retryAttempts;
-        private readonly TimeSpan? _attemptTimeout;
+        private readonly TimeSpan _attemptTimeout;
 
-        public HttpMessageHandler(System.Net.Http.HttpMessageHandler handler, int retryAttempts, TimeSpan? attemptTimeout = null) : base(handler)
+        public HttpMessageHandlerWithPolicy(ConfigClientOptions options) : base(new HttpClientHandler())
         {
-            _retryAttempts = retryAttempts;
-            _attemptTimeout = attemptTimeout;
+            _retryAttempts = options.RemoteConfigRequestingAttemptsCount;
+            _attemptTimeout = options.RemoteConfigRequestingTimeout;
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -48,15 +48,13 @@ namespace ConfigServiceClient.Persistence.Loader.LoadingFromRemoteStorage
 
         private CancellationTokenSource GetCancellationTokenSource(CancellationToken cancellationToken)
         {
-            var timeout = _attemptTimeout ?? _defaultTimeout;
-            if (timeout == Timeout.InfiniteTimeSpan)
+            if (_attemptTimeout == Timeout.InfiniteTimeSpan || _attemptTimeout == TimeSpan.Zero)
             {
-                // No need to create a CTS if there's no timeout.
                 return null;
             } 
             
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            cts.CancelAfter(timeout);
+            cts.CancelAfter(_attemptTimeout);
 
             return cts;
         }
