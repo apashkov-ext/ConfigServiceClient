@@ -12,6 +12,12 @@ namespace ConfigServiceClient
 {
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds the Configuraton service client.
+        /// </summary>
+        /// <param name="services">Instance of <see cref="IServiceCollection"/>.</param>
+        /// <param name="configure">A delegate that it used to configure a Configurtion service client.</param>
+        /// <returns></returns>
         public static IServiceCollection AddConfigurationServiceClient(this IServiceCollection services, Action<ConfigClientOptions> configure = null)
         {
             return services.AddClient(configure);
@@ -28,7 +34,7 @@ namespace ConfigServiceClient
             services.AddSingleton<IConfigLoader, ConfigLoader>();
             services.AddSingleton<IJsonImporter<IOptionGroup>, JsonImporter>();
             services.AddSingleton<IConfigStorage, ConfigStorage>();
-            services.AddSingleton<IConfigurationServiceClient, ConfigurationServiceClient>();
+            services.AddSingleton<IConfigurationServiceClient>(provider => new ConfigurationServiceClient(provider.GetRequiredService<IConfigStorage>()));
 
             return services;
         }
@@ -37,7 +43,36 @@ namespace ConfigServiceClient
         {
             var options = new ConfigClientOptions();
             configure?.Invoke(options);
+            ValidateOptions(options);
             return options;
+        }
+
+        private static void ValidateOptions(ConfigClientOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(options.ConfigServiceApiEndpoint))
+            {
+                throw new ApplicationException($"Invalid value for {nameof(ConfigClientOptions.ConfigServiceApiEndpoint)} option.");
+            }
+
+            if (string.IsNullOrWhiteSpace(options.Project))
+            {
+                throw new ApplicationException($"Invalid value for {nameof(ConfigClientOptions.Project)} option.");
+            }
+
+            if (string.IsNullOrWhiteSpace(options.ApiKey))
+            {
+                throw new ApplicationException($"Invalid value for {nameof(ConfigClientOptions.ApiKey)} option.");
+            }
+
+            if (options.RemoteConfigRequestingAttemptsCount <= 0)
+            {
+                throw new ApplicationException($"Value of the {nameof(ConfigClientOptions.RemoteConfigRequestingAttemptsCount)} option should be more than 0.");
+            }
+
+            if (options.RemoteConfigRequestingTimeout == TimeSpan.Zero)
+            {
+                throw new ApplicationException($"Value of the {nameof(ConfigClientOptions.RemoteConfigRequestingTimeout)} option should be more than TimeSpan.Zero.");
+            }
         }
     }
 }
