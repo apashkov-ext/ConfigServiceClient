@@ -10,7 +10,7 @@ namespace ConfigServiceClient.Options
         /// <summary>
         /// Configuration Service instance web api url.
         /// </summary>
-        public string ConfigServiceApiEndpoint { get; set; }
+        public Uri ConfigServiceApiEndpoint { get; set; }
 
         /// <summary>
         /// Name of the project for which the configuration will be retrieved.

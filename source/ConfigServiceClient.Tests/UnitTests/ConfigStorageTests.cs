@@ -21,8 +21,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var loaderMock = new Mock<IConfigLoader>();
             loaderMock.Setup(x => x.TryLoadJsonAsync(It.IsAny<string>())).ReturnsAsync(() => null);
 
-            var importerMock = new Mock<IJsonImporter<IOptionGroup>>();
-            importerMock.Setup(x => x.ImportFromJson(It.IsAny<string>())).Returns(() => null);
+            var importerMock = new Mock<IJsonParser<IOptionGroup>>();
+            importerMock.Setup(x => x.Parse(It.IsAny<string>())).Returns(() => null);
 
             var storage = new TestableConfigStorage(loaderMock.Object, importerMock.Object);
 
@@ -37,8 +37,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var loaderMock = new Mock<IConfigLoader>();
             loaderMock.Setup(x => x.TryLoadJsonAsync(It.IsAny<string>())).ReturnsAsync(() => config);
 
-            var importerMock = new Mock<IJsonImporter<IOptionGroup>>();
-            importerMock.Setup(x => x.ImportFromJson(It.IsAny<string>())).Returns(() => new OptionGroup(""));
+            var importerMock = new Mock<IJsonParser<IOptionGroup>>();
+            importerMock.Setup(x => x.Parse(It.IsAny<string>())).Returns(() => new OptionGroup(""));
 
             var storage = new TestableConfigStorage(loaderMock.Object, importerMock.Object);
             var result = await storage.GetConfigAsync<IOptionGroup>("env");
@@ -54,8 +54,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var loaderMock = new Mock<IConfigLoader>();
             loaderMock.Setup(x => x.TryLoadJsonAsync(It.IsAny<string>())).ReturnsAsync(() => config);
 
-            var importerMock = new Mock<IJsonImporter<IOptionGroup>>();
-            importerMock.Setup(x => x.ImportFromJson(It.IsAny<string>())).Returns(() => null);
+            var importerMock = new Mock<IJsonParser<IOptionGroup>>();
+            importerMock.Setup(x => x.Parse(It.IsAny<string>())).Returns(() => null);
 
             var storage = new TestableConfigStorage(loaderMock.Object, importerMock.Object);
             var result = await storage.GetConfigAsync<Config>("env");

@@ -4,6 +4,7 @@ using ConfigServiceClient.Core.Models;
 
 namespace ConfigServiceClient.Api
 {
+    /// <inheritdoc cref="IConfigObject"/>
     public class ConfigObject : IConfigObject
     {
         private readonly IOptionGroup _root;

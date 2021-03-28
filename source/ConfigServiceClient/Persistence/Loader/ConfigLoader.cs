@@ -11,9 +11,9 @@ namespace ConfigServiceClient.Persistence.Loader
         private readonly string _project;
         private readonly TimeSpan _expiration;
         private readonly IRemoteJsonLoader _jsonLoader;
-        private readonly IJsonCache _jsonCache;
+        private readonly ICache<string> _jsonCache;
 
-        public ConfigLoader(IRemoteJsonLoader jsonLoader, IJsonCache jsonCache, ConfigClientOptions options)
+        public ConfigLoader(IRemoteJsonLoader jsonLoader, ICache<string> jsonCache, ConfigClientOptions options)
         {
             _jsonLoader = jsonLoader;
             _jsonCache = jsonCache;
@@ -21,7 +21,7 @@ namespace ConfigServiceClient.Persistence.Loader
             _expiration = options.CacheExpiration;
         }
 
-        protected ConfigLoader(IRemoteJsonLoader jsonLoader, IJsonCache jsonCache, TimeSpan expiration)
+        protected ConfigLoader(IRemoteJsonLoader jsonLoader, ICache<string> jsonCache, TimeSpan expiration)
         {
             _jsonLoader = jsonLoader;
             _jsonCache = jsonCache;

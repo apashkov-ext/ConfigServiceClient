@@ -5,9 +5,16 @@ using ConfigServiceClient.Core.Models;
 
 namespace ConfigServiceClient.Persistence.Import
 {
-    public class JsonImporter : IJsonImporter<IOptionGroup>
+    /// <summary>
+    /// From json to <see cref="IOptionGroup"/> parser.
+    /// </summary>
+    public class OptionGroupJsonParser : IJsonParser<IOptionGroup>
     {
-        public IOptionGroup ImportFromJson(string json)
+        /// <summary>
+        /// Returns parsed <see cref="IOptionGroup"/>.
+        /// </summary>
+        /// <param name="json">Json string.</param>
+        public IOptionGroup Parse(string json)
         {
             var doc = JsonDocument.Parse(json);
             var rootGroup = new OptionGroup("");

@@ -6,15 +6,15 @@ using Xunit;
 
 namespace ConfigServiceClient.Tests.UnitTests
 {
-    public class JsonImporterTests
+    public class JsonParserTests
     {
         [Fact]
         public void ImportFromJson_RootOnly_ReturnsCorrectResult()
         {
             const string json = "{}";
-            var importer = new JsonImporter();
+            var importer = new OptionGroupJsonParser();
 
-            var res = importer.ImportFromJson(json);
+            var res = importer.Parse(json);
 
             Assert.NotNull(res);
         }
@@ -23,9 +23,9 @@ namespace ConfigServiceClient.Tests.UnitTests
         public void ImportFromJson_RootOnly2_ReturnsCorrectResult()
         {
             const string json = "{}";
-            var importer = new JsonImporter();
+            var importer = new OptionGroupJsonParser();
 
-            var res = importer.ImportFromJson(json);
+            var res = importer.Parse(json);
 
             Assert.IsAssignableFrom<IOptionGroup>(res);
         }
@@ -35,9 +35,9 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string name = "prop";
             const string json = "{\"" + name + "\":\"test\"}";
-            var importer = new JsonImporter();
+            var importer = new OptionGroupJsonParser();
 
-            var res = importer.ImportFromJson(json);
+            var res = importer.Parse(json);
             var opt = res.FindOption(name);
 
             Assert.NotNull(opt);
@@ -48,9 +48,9 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string name = "prop";
             const string json = "{\"" + name + "\":\"test\"}";
-            var importer = new JsonImporter();
+            var importer = new OptionGroupJsonParser();
 
-            var res = importer.ImportFromJson(json);
+            var res = importer.Parse(json);
             var opt = res.FindOption(name);
 
             Assert.Equal(opt.Name, name);
@@ -61,9 +61,9 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string name = "nested";
             const string json = "{\"" + name + "\":{}}";
-            var importer = new JsonImporter();
+            var importer = new OptionGroupJsonParser();
 
-            var res = importer.ImportFromJson(json);
+            var res = importer.Parse(json);
             var nested = res.FindNested(name);
 
             Assert.NotNull(nested);
@@ -74,9 +74,9 @@ namespace ConfigServiceClient.Tests.UnitTests
         {
             const string name = "nested";
             const string json = "{\"" + name + "\":{}}";
-            var importer = new JsonImporter();
+            var importer = new OptionGroupJsonParser();
 
-            var res = importer.ImportFromJson(json);
+            var res = importer.Parse(json);
             var nested = res.FindNested(name);
 
             Assert.Equal(name, nested.Name);
@@ -100,8 +100,8 @@ namespace ConfigServiceClient.Tests.UnitTests
                 }
             );
 
-            var importer = new JsonImporter();
-            var res = importer.ImportFromJson(json);
+            var importer = new OptionGroupJsonParser();
+            var res = importer.Parse(json);
 
             Assert.Equal(expected, res, new OptionGroupEqualityComparer());
         }

@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace ConfigServiceClient.Core.Models
 {
+    /// <inheritdoc cref="IOptionGroup"/>
     public class OptionGroup : IOptionGroup, IOptionGroupBuilder
     {
         protected readonly List<Option> Options = new List<Option>();

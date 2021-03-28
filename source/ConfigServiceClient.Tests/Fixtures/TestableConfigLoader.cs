@@ -7,6 +7,6 @@ namespace ConfigServiceClient.Tests.Fixtures
 {
     internal class TestableConfigLoader : ConfigLoader
     {
-        public TestableConfigLoader(IRemoteJsonLoader jsonLoader, IJsonCache cache, TimeSpan expiration) : base(jsonLoader, cache, expiration) {}
+        public TestableConfigLoader(IRemoteJsonLoader jsonLoader, ICache<string> cache, TimeSpan expiration) : base(jsonLoader, cache, expiration) {}
     }
 }

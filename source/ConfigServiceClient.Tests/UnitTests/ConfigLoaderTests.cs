@@ -16,7 +16,7 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => null);
 
-            var cacheMock = new Mock<IJsonCache>();
+            var cacheMock = new Mock<ICache<string>>();
             cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => null);
 
             var loader = new TestableConfigLoader(clientMock.Object, cacheMock.Object, TimeSpan.Zero);
@@ -33,7 +33,7 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => expected);
 
-            var cacheMock = new Mock<IJsonCache>();
+            var cacheMock = new Mock<ICache<string>>();
             cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => null);
 
             var loader = new TestableConfigLoader(clientMock.Object, cacheMock.Object, TimeSpan.FromHours(1));
@@ -68,8 +68,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => null);
 
-            var cacheMock = new Mock<IJsonCache>();
-            cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => new JsonCacheEntry { Content = expected, Modified = DateTime.Now });
+            var cacheMock = new Mock<ICache<string>>();
+            cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => new CacheEntry<string> { Content = expected, Modified = DateTime.Now });
 
             var loader = new TestableConfigLoader(clientMock.Object, cacheMock.Object, TimeSpan.FromHours(1));
             var json = await loader.TryLoadJsonAsync("env");
@@ -85,8 +85,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ThrowsAsync(new Exception());
 
-            var cacheMock = new Mock<IJsonCache>();
-            cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => new JsonCacheEntry { Content = expected, Modified = DateTime.Now });
+            var cacheMock = new Mock<ICache<string>>();
+            cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => new CacheEntry<string> { Content = expected, Modified = DateTime.Now });
 
             var loader = new TestableConfigLoader(clientMock.Object, cacheMock.Object, TimeSpan.Zero);
             var json = await loader.TryLoadJsonAsync("env");
@@ -102,8 +102,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ThrowsAsync(new Exception());
 
-            var cacheMock = new Mock<IJsonCache>();
-            cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => new JsonCacheEntry { Content = expected, Modified = DateTime.Now });
+            var cacheMock = new Mock<ICache<string>>();
+            cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns(() => new CacheEntry<string> { Content = expected, Modified = DateTime.Now });
 
             var loader = new TestableConfigLoader(clientMock.Object, cacheMock.Object, TimeSpan.FromHours(1));
             var json = await loader.TryLoadJsonAsync("env");
@@ -120,8 +120,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => remote);
 
-            var cacheMock = new Mock<IJsonCache>();
-            var entry = new JsonCacheEntry
+            var cacheMock = new Mock<ICache<string>>();
+            var entry = new CacheEntry<string>
             {
                 Content = cached,
                 Modified = DateTime.Now.Subtract(TimeSpan.FromHours(1))
@@ -143,8 +143,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => remote);
 
-            var cacheMock = new Mock<IJsonCache>();
-            var entry = new JsonCacheEntry
+            var cacheMock = new Mock<ICache<string>>();
+            var entry = new CacheEntry<string>
             {
                 Content = cached,
                 Modified = DateTime.Now.Subtract(TimeSpan.FromHours(1))
@@ -166,8 +166,8 @@ namespace ConfigServiceClient.Tests.UnitTests
             var clientMock = new Mock<IRemoteJsonLoader>();
             clientMock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(() => remote);
 
-            var cacheMock = new Mock<IJsonCache>();
-            var entry = new JsonCacheEntry
+            var cacheMock = new Mock<ICache<string>>();
+            var entry = new CacheEntry<string>
             {
                 Content = cached,
                 Modified = DateTime.Now.Subtract(TimeSpan.FromHours(2))

@@ -30,9 +30,9 @@ namespace ConfigServiceClient
 
             services.AddSingleton<IHttpClient>(x => new DefaultHttpClient(options, new HttpMessageHandlerWithPolicy(options)));
             services.AddSingleton<IRemoteJsonLoader, RemoteJsonLoader>();
-            services.AddSingleton<IJsonCache, JsonCache>();
+            services.AddSingleton<ICache<string>, JsonCache>();
             services.AddSingleton<IConfigLoader, ConfigLoader>();
-            services.AddSingleton<IJsonImporter<IOptionGroup>, JsonImporter>();
+            services.AddSingleton<IJsonParser<IOptionGroup>, OptionGroupJsonParser>();
             services.AddSingleton<IConfigStorage, ConfigStorage>();
             services.AddSingleton<IConfigurationServiceClient>(provider => new ConfigurationServiceClient(provider.GetRequiredService<IConfigStorage>()));
 
@@ -49,7 +49,7 @@ namespace ConfigServiceClient
 
         private static void ValidateOptions(ConfigClientOptions options)
         {
-            if (string.IsNullOrWhiteSpace(options.ConfigServiceApiEndpoint))
+            if (options.ConfigServiceApiEndpoint == null)
             {
                 throw new ApplicationException($"Invalid value for {nameof(ConfigClientOptions.ConfigServiceApiEndpoint)} option.");
             }

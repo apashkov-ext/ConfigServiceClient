@@ -7,6 +7,6 @@ namespace ConfigServiceClient.Tests.Fixtures
 {
     internal class TestableConfigStorage : ConfigStorage
     {
-        public TestableConfigStorage(IConfigLoader loader, IJsonImporter<IOptionGroup> importer) : base(loader, importer) {}
+        public TestableConfigStorage(IConfigLoader loader, IJsonParser<IOptionGroup> importer) : base(loader, importer) {}
     }
 }

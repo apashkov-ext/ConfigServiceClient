@@ -11,9 +11,9 @@ namespace ConfigServiceClient.Persistence.Storage
     {
         private const string DoesNotExistErr = "Config does not exist";
         private readonly IConfigLoader _loader;
-        private readonly IJsonImporter<IOptionGroup> _importer;
+        private readonly IJsonParser<IOptionGroup> _importer;
 
-        public ConfigStorage(IConfigLoader loader, IJsonImporter<IOptionGroup> importer)
+        public ConfigStorage(IConfigLoader loader, IJsonParser<IOptionGroup> importer)
         {
             _loader = loader;
             _importer = importer;
@@ -28,7 +28,7 @@ namespace ConfigServiceClient.Persistence.Storage
                 return JsonDeserializer.Deserialize<T>(json);
             }
 ;
-            var imported = _importer.ImportFromJson(json);
+            var imported = _importer.Parse(json);
 
             return (T)imported;
         }
